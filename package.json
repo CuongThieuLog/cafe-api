@@ -5,8 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "env-cmd -f ./.env node src/app.js",
-    "dev": "env-cmd -f ./.env nodemon --exec \"node src/app.js\""
+    "start": "env-cmd -f .env node src/app.js",
+    "dev": "env-cmd -f .env nodemon --exec \"node src/app.js\""
   },
   "keywords": [],
   "author": "",
