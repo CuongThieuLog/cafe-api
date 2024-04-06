@@ -108,6 +108,19 @@ function ProductController() {
     }
   };
 
+  // Tất cả sản phẩm tồn kho
+  this.getInventoryProducts = async (req, res) => {
+    try {
+      const allProducts = await Product.find();
+      const inventoryProducts = allProducts.filter(
+        (product) => product.quantity > 0
+      );
+      res.status(200).json({ data: inventoryProducts });
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  };
+
   return this;
 }
 
