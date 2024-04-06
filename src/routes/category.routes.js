@@ -8,6 +8,6 @@ router.get("/", auth, CategoryController.getAll);
 router.post("/", auth, roleAdmin, CategoryController.create);
 router.get("/:id", auth, CategoryController.getById);
 router.put("/:id", auth, roleAdmin, CategoryController.update);
-router.delete("/:id", auth, roleAdmin, CategoryController.getById);
+router.delete("/:id", auth, roleAdmin, CategoryController.delete);
 
 module.exports = router;
