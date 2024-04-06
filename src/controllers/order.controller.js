@@ -2,6 +2,16 @@ const Order = require("../models/order.model");
 const Product = require("../models/product.model");
 
 function OrderController() {
+  // Tất cả đơn hàng
+  this.getAll = async (req, res) => {
+    try {
+      const orders = await Order.find();
+      res.status(200).json({ data: orders });
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  };
+
   // Tạo đơn hàng
   this.create = async (req, res) => {
     try {
@@ -52,8 +62,8 @@ function OrderController() {
   // Lấy ra các đơn hàng của user đó (hoặc theo prams gửi lên các status)
   this.getAllOrdersForCurrentUser = async (req, res) => {
     try {
-      // const userId = req.user._id;
-      const userId = req.params.id;
+      const userId = req.user._id;
+      // const userId = req.params.id;
       let query = { user: userId };
       const status = req.query.status;
       if (
@@ -87,6 +97,29 @@ function OrderController() {
       await order.save();
 
       res.status(200).json({ message: "Order status updated successfully" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error" });
+    }
+  };
+
+  // Xoá đơn hàng
+  this.deleteOrder = async (req, res) => {
+    try {
+      const orderId = req.params.id;
+      const userId = req.user._id;
+      const isAdmin = req.user.isAdmin;
+      const order = await Order.findByIdAndDelete(orderId);
+      if (!order) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+      if (order.user.toString() !== userId.toString() && !isAdmin) {
+        return res
+          .status(403)
+          .json({ message: "Unauthorized to delete this order" });
+      }
+      await order;
+      res.status(200).json({ message: "Order deleted successfully" });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Error" });

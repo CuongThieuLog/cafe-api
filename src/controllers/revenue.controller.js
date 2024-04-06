@@ -6,16 +6,16 @@ function RevenueController() {
   this.calculateTotalProfit = async (req, res) => {
     try {
       const orders = await Order.find({ status: "DELIVERED" });
-      let totalRevenue = 0;
+      let totalProfit = 0;
 
       for (const order of orders) {
         for (const item of order.products) {
           const product = await Product.findById(item.product);
-          totalRevenue += item.quantity * product.price;
+          totalProfit += item.quantity * product.price;
         }
       }
 
-      res.status(200).json({ totalRevenue });
+      res.status(200).json({ totalProfit });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -25,17 +25,17 @@ function RevenueController() {
   this.calculateTotalIncome = async (req, res) => {
     try {
       const orders = await Order.find({ status: "DELIVERED" });
-      let totalProfit = 0;
+      let totalIncome = 0;
 
       for (const order of orders) {
         for (const item of order.products) {
           const product = await Product.findById(item.product);
-          totalProfit +=
+          totalIncome +=
             item.quantity * product.price - item.quantity * product.cost;
         }
       }
 
-      res.status(200).json({ totalProfit });
+      res.status(200).json({ totalIncome });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

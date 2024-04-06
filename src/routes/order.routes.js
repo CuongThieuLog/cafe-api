@@ -4,8 +4,10 @@ const auth = require("../middleware/auth.middleware");
 const roleAdmin = require("../middleware/admin.middleware");
 
 //private
+router.get("/", auth, roleAdmin, OrderController.getAll);
 router.post("/", auth, OrderController.create);
-router.get("/user/:id", auth, OrderController.getAllOrdersForCurrentUser);
+router.get("/my-self", auth, OrderController.getAllOrdersForCurrentUser);
+router.delete("/:id", auth, OrderController.deleteOrder);
 router.put(
   "/update-status/:id",
   auth,
