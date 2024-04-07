@@ -23,7 +23,6 @@ function ProductController() {
     }
   };
 
-  // Admin/User
   this.getAll = async (req, res) => {
     try {
       const products = await Product.find();
@@ -33,12 +32,11 @@ function ProductController() {
     }
   };
 
-  // Admin/User
   this.getById = async (req, res) => {
     try {
       const product = await Product.findById(req.params.id);
       if (!product) {
-        return res.status(404).json({ message: "Not Found!" });
+        return res.status(404).json({ message: "Product not found!" });
       }
       res.status(200).json({ data: product });
     } catch (error) {
@@ -46,7 +44,6 @@ function ProductController() {
     }
   };
 
-  // Admin
   this.update = async (req, res) => {
     try {
       const { name, description, price, quantity, cost, categoryId, image } =
@@ -57,7 +54,7 @@ function ProductController() {
         { new: true }
       );
       if (!updatedProduct) {
-        return res.status(404).json({ message: "Not Found!" });
+        return res.status(404).json({ message: "Product not found!" });
       }
       res.status(200).json({
         message: "Updated successfully",
@@ -68,12 +65,11 @@ function ProductController() {
     }
   };
 
-  // Admin
   this.delete = async (req, res) => {
     try {
       const deletedProduct = await Product.findByIdAndDelete(req.params.id);
       if (!deletedProduct) {
-        return res.status(404).json({ message: "Not Found!" });
+        return res.status(404).json({ message: "Product not found!" });
       }
       res.status(200).json({
         message: "Deleted successfully",
@@ -84,7 +80,6 @@ function ProductController() {
     }
   };
 
-  // Admin/User
   this.getRemainingQuantity = async (req, res) => {
     try {
       const productId = req.params.id;
@@ -97,7 +92,7 @@ function ProductController() {
 
       const product = await Product.findById(productId);
       if (!product) {
-        return res.status(404).json({ message: "Not Found!" });
+        return res.status(404).json({ message: "Product not found!" });
       }
 
       const remainingQuantity = product.quantity - totalOrderedQuantity;

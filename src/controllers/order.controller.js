@@ -24,7 +24,7 @@ function OrderController() {
       for (const item of products) {
         const product = await Product.findById(item.productId);
         if (!product) {
-          return res.status(404).json({ message: "Not Found!" });
+          return res.status(404).json({ message: "Product not found!" });
         }
         total += product.price * item.quantity;
         orderProducts.push({
@@ -55,7 +55,7 @@ function OrderController() {
       res.status(201).json({ message: "Order created successfully" });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: "Error" });
+      res.status(500).json({ message: "Error!" });
     }
   };
 
@@ -63,7 +63,6 @@ function OrderController() {
   this.getAllOrdersForCurrentUser = async (req, res) => {
     try {
       const userId = req.user._id;
-      // const userId = req.params.id;
       let query = { user: userId };
       const status = req.query.status;
       if (
@@ -78,7 +77,7 @@ function OrderController() {
       res.status(200).json({ orders });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: "Error" });
+      res.status(500).json({ message: "Error!" });
     }
   };
 
@@ -90,7 +89,7 @@ function OrderController() {
 
       const order = await Order.findById(orderId);
       if (!order) {
-        return res.status(404).json({ message: "Not Found!" });
+        return res.status(404).json({ message: "Order not found!" });
       }
 
       order.status = status;
@@ -99,30 +98,30 @@ function OrderController() {
       res.status(200).json({ message: "Order status updated successfully" });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: "Error" });
+      res.status(500).json({ message: "Error!" });
     }
   };
 
   // Xoá đơn hàng
-  this.deleteOrder = async (req, res) => {
+  this.delete = async (req, res) => {
     try {
       const orderId = req.params.id;
       const userId = req.user._id;
       const isAdmin = req.user.isAdmin;
       const order = await Order.findByIdAndDelete(orderId);
       if (!order) {
-        return res.status(404).json({ message: "Order not found" });
+        return res.status(404).json({ message: "Order not found!" });
       }
       if (order.user.toString() !== userId.toString() && !isAdmin) {
         return res
           .status(403)
-          .json({ message: "Unauthorized to delete this order" });
+          .json({ message: "Unauthorized to delete this order!" });
       }
       await order;
       res.status(200).json({ message: "Order deleted successfully" });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: "Error" });
+      res.status(500).json({ message: "Error!" });
     }
   };
 

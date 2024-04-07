@@ -28,7 +28,7 @@ function CategoryController() {
     try {
       const category = await Category.findById(req.params.id);
       if (!category) {
-        return res.status(404).json({ message: "Not Found!" });
+        return res.status(404).json({ message: "Category not found!" });
       }
       res.status(200).json({ data: category });
     } catch (error) {
@@ -46,7 +46,7 @@ function CategoryController() {
         { new: true }
       );
       if (!updatedCategory) {
-        return res.status(404).json({ message: "Not Found!" });
+        return res.status(404).json({ message: "Category not found!" });
       }
       res
         .status(200)
@@ -61,7 +61,7 @@ function CategoryController() {
     try {
       const deletedCategory = await Category.findByIdAndDelete(req.params.id);
       if (!deletedCategory) {
-        return res.status(404).json({ message: "Not Found!" });
+        return res.status(404).json({ message: "Category not found!" });
       }
       res
         .status(200)
