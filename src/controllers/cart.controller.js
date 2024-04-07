@@ -7,6 +7,21 @@ function CartController() {
       const { productId, quantity } = req.body;
       const userId = req.user._id;
 
+      const product = await Product.findById(productId);
+      if (!product) {
+        throw new Error("Product not found!");
+      }
+
+      if (
+        product.quantity <= 0 ||
+        quantity <= 0 ||
+        quantity > product.quantity
+      ) {
+        return res
+          .status(400)
+          .json({ error: "Product is not available in sufficient quantity." });
+      }
+
       let cart = await Cart.findOne({ user: userId });
 
       if (!cart) {
@@ -24,11 +39,6 @@ function CartController() {
       if (productIndex !== -1) {
         cart.items[productIndex].quantity += quantity;
       } else {
-        const product = await Product.findById(productId);
-        if (!product) {
-          throw new Error("Product not found!");
-        }
-
         cart.items.push({
           product: productId,
           quantity,
