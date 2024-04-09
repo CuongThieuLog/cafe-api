@@ -8,26 +8,22 @@ function UserController() {
   this.register = async (req, res) => {
     try {
       const existingUser = await User.findOne({ email: req.body.email });
+
       if (existingUser) {
-        return res.status(400).json({ message: "Email đã tồn tại!" });
+        return res.status(400).json({ error: "Email already exists" });
       }
 
-      let user = new User();
+      const newUser = new User({
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password,
+      });
 
-      user.username = req.body.username;
-      user.email = req.body.email;
-      user.password = req.body.password;
+      await newUser.save();
 
-      user
-        .save()
-        .then(function () {
-          return res.json({ user: user.toAuthJSON() });
-        })
-        .catch(function (error) {
-          return res.status(400).json(error);
-        });
+      return res.json({ user: newUser.toAuthJSON() });
     } catch (error) {
-      return res.status(400).json(error);
+      return res.status(400).json({ error: error.message });
     }
   };
 

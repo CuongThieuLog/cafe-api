@@ -16,8 +16,8 @@ const UserSchema = new mongoose.Schema(
       lowercase: true,
       required: [true, "can't be blank"],
       match: [/\S+@\S+\.\S+/, "is invalid"],
-      index: true,
       unique: true,
+      index: true,
     },
     password: {
       type: String,
@@ -64,7 +64,7 @@ UserSchema.methods.generateAuthToken = function () {
       _id: this._id,
       username: this.username,
     },
-    process.env.JWT_KEY
+    process.env.JWT_KEY || "local"
   );
   this.tokens = this.tokens.concat({ token });
   this.save();

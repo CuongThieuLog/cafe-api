@@ -6,7 +6,7 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/app.js",
+    "start": "nodemon src/app.js",
     "dev": "nodemon --exec \"node src/app.js\""
   },
   "keywords": [],
