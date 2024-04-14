@@ -83,6 +83,10 @@ function CartController() {
         throw new Error("Product not found!");
       }
 
+      if (quantity > product.quantity) {
+        return res.status(400).json({ error: "Not enough quantity in stock." });
+      }
+
       cart.items[productIndex].quantity = quantity;
       cart.items[productIndex].price = product.price;
 
