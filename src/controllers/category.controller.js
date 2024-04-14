@@ -1,11 +1,10 @@
 const Category = require("../models/category.model");
 
 function CategoryController() {
-  // Admin
   this.create = async (req, res) => {
     try {
-      const { name, description } = req.body;
-      const category = new Category({ name, description });
+      const { name } = req.body;
+      const category = new Category({ name });
       await category.save();
       res.status(201).json({ message: "Created successfully", data: category });
     } catch (error) {
@@ -13,17 +12,21 @@ function CategoryController() {
     }
   };
 
-  // Admin
   this.getAll = async (req, res) => {
     try {
-      const categories = await Category.find();
+      let name = req.query.name;
+      let query = {};
+      if (name && name !== "") {
+        query.name = { $regex: name, $options: "i" };
+      }
+
+      const categories = await Category.find(query);
       res.status(200).json({ data: categories });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
   };
 
-  // Admin
   this.getById = async (req, res) => {
     try {
       const category = await Category.findById(req.params.id);
@@ -36,13 +39,12 @@ function CategoryController() {
     }
   };
 
-  // Admin
   this.update = async (req, res) => {
     try {
-      const { name, description } = req.body;
+      const { name } = req.body;
       const updatedCategory = await Category.findByIdAndUpdate(
         req.params.id,
-        { name, description },
+        { name },
         { new: true }
       );
       if (!updatedCategory) {
@@ -56,7 +58,6 @@ function CategoryController() {
     }
   };
 
-  // Admin
   this.delete = async (req, res) => {
     try {
       const deletedCategory = await Category.findByIdAndDelete(req.params.id);

@@ -2,17 +2,21 @@ const Order = require("../models/order.model");
 const Product = require("../models/product.model");
 
 function OrderController() {
-  // Tất cả đơn hàng
   this.getAll = async (req, res) => {
     try {
-      const orders = await Order.find();
+      let status = req.query.status;
+      let query = {};
+      if (status && status !== "") {
+        query.status = { $regex: status, $options: "i" };
+      }
+
+      const orders = await Order.find(query).populate("products.product");
       res.status(200).json({ data: orders });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
   };
 
-  // Tạo đơn hàng
   this.create = async (req, res) => {
     try {
       const { products, shippingAddress } = req.body;
@@ -59,7 +63,6 @@ function OrderController() {
     }
   };
 
-  // Lấy ra các đơn hàng của user đó (hoặc theo prams gửi lên các status)
   this.getAllOrdersForCurrentUser = async (req, res) => {
     try {
       const userId = req.user._id;
@@ -73,7 +76,7 @@ function OrderController() {
       ) {
         query.status = status;
       }
-      const orders = await Order.find(query);
+      const orders = await Order.find(query).populate("products.product");
       res.status(200).json({ orders });
     } catch (error) {
       console.error(error);
@@ -81,7 +84,6 @@ function OrderController() {
     }
   };
 
-  // Cập nhật trạng thái của đơn hàng
   this.updateOrderStatus = async (req, res) => {
     try {
       const orderId = req.params.id;
@@ -102,7 +104,6 @@ function OrderController() {
     }
   };
 
-  // Xoá đơn hàng
   this.delete = async (req, res) => {
     try {
       const orderId = req.params.id;

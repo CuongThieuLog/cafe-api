@@ -7,7 +7,6 @@ const CategorySchema = new mongoose.Schema(
       required: [true, "can't be blank"],
       unique: true,
     },
-    description: String,
   },
   { timestamps: true }
 );

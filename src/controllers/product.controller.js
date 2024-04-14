@@ -2,7 +2,6 @@ const Order = require("../models/order.model");
 const Product = require("../models/product.model");
 
 function ProductController() {
-  // Admin
   this.create = async (req, res) => {
     try {
       const { name, description, price, quantity, cost, categoryId, image } =
@@ -25,7 +24,12 @@ function ProductController() {
 
   this.getAll = async (req, res) => {
     try {
-      const products = await Product.find();
+      let name = req.query.name;
+      let query = {};
+      if (name && name !== "") {
+        query.name = { $regex: name, $options: "i" };
+      }
+      const products = await Product.find(query);
       res.status(200).json({ data: products });
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -67,6 +71,16 @@ function ProductController() {
 
   this.delete = async (req, res) => {
     try {
+      const productInOrders = await Order.find({
+        "products.product": req.params.id,
+      });
+      if (productInOrders.length > 0) {
+        return res.status(400).json({
+          message:
+            "This product is associated with one or more orders and cannot be deleted.",
+        });
+      }
+
       const deletedProduct = await Product.findByIdAndDelete(req.params.id);
       if (!deletedProduct) {
         return res.status(404).json({ message: "Product not found!" });
@@ -103,7 +117,6 @@ function ProductController() {
     }
   };
 
-  // Tất cả sản phẩm tồn kho
   this.getInventoryProducts = async (req, res) => {
     try {
       const allProducts = await Product.find();
