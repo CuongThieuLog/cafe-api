@@ -7,6 +7,7 @@ const roleAdmin = require("../middleware/admin.middleware");
 router.get("/", auth, roleAdmin, OrderController.getAll);
 router.post("/", auth, OrderController.create);
 router.get("/my-self", auth, OrderController.getAllOrdersForCurrentUser);
+router.get("/:id", auth, OrderController.getById);
 router.delete("/:id", auth, OrderController.delete);
 router.put(
   "/update-status/:id",
