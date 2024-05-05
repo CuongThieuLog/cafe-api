@@ -1,5 +1,6 @@
 const Order = require("../models/order.model");
 const Product = require("../models/product.model");
+const Cart = require("../models/cart.model");
 
 function OrderController() {
   this.getAll = async (req, res) => {
@@ -54,6 +55,20 @@ function OrderController() {
           product.quantity -= item.quantity;
           await product.save();
         }
+      }
+
+      const cart = await Cart.findOne({ user: userId });
+      if (cart) {
+        for (const item of orderProducts) {
+          cart.items = cart.items.filter(
+            (cartItem) => !cartItem.product.equals(item.product)
+          );
+        }
+        cart.total = cart.items.reduce(
+          (acc, curr) => acc + curr.quantity * curr.price,
+          0
+        );
+        await cart.save();
       }
 
       res.status(201).json({ message: "Order created successfully" });
