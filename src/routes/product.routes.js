@@ -8,7 +8,7 @@ router.get("/", ProductController.getAll);
 router.post("/", auth, roleAdmin, ProductController.create);
 router.get("/:id", ProductController.getById);
 router.put("/:id", auth, roleAdmin, ProductController.update);
-router.delete("/:id", auth, roleAdmin, ProductController.getById);
+router.delete("/:id", auth, roleAdmin, ProductController.delete);
 router.get(
   "/remaining-quantity/:id",
   auth,
