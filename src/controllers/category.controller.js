@@ -60,15 +60,28 @@ function CategoryController() {
 
   this.delete = async (req, res) => {
     try {
-      const deletedCategory = await Category.findByIdAndDelete(req.params.id);
+      const categoryId = req.params.id;
+
+      const productsCount = await Product.countDocuments({ categoryId });
+
+      if (productsCount > 0) {
+        return res.status(400).json({
+          message:
+            "Cannot delete category. There are still products associated with it.",
+        });
+      }
+
+      const deletedCategory = await Category.findByIdAndDelete(categoryId);
+
       if (!deletedCategory) {
         return res.status(404).json({ message: "Category not found!" });
       }
+
       res
         .status(200)
         .json({ message: "Deleted successfully", data: deletedCategory });
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      res.status(500).json({ error: error.message });
     }
   };
 
