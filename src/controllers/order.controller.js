@@ -32,7 +32,7 @@ function OrderController() {
 
   this.create = async (req, res) => {
     try {
-      const { products, shippingAddress } = req.body;
+      const { products, shippingAddress, phone } = req.body;
       const userId = req.user._id;
 
       let total = 0;
@@ -56,6 +56,7 @@ function OrderController() {
         products: orderProducts,
         total,
         shippingAddress,
+        phone,
         status: "PENDING",
       });
 

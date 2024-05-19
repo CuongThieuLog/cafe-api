@@ -31,6 +31,10 @@ const OrderSchema = new mongoose.Schema(
       required: [true, "can't be blank"],
       min: [0, "must be at least 0"],
     },
+    phone: {
+      type: Number,
+      required: [true, "can't be blank"],
+    },
     shippingAddress: {
       type: String,
       required: [true, "can't be blank"],
