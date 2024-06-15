@@ -99,10 +99,13 @@ function CategoryController() {
         }
 
         const products = await Product.find(productsQuery);
-        categoriesWithProducts.push({
-          category: category,
-          products: products,
-        });
+
+        if (products.length > 0) {
+          categoriesWithProducts.push({
+            category: category,
+            products: products,
+          });
+        }
       }
 
       res.status(200).json({ data: categoriesWithProducts });
