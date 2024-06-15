@@ -86,26 +86,26 @@ function CategoryController() {
     }
   };
 
-  this.getCategoryWithProducts = async (req, res) => {
+  this.getAllCategoryWithProducts = async (req, res) => {
     try {
-      const categoryId = req.params.id;
-      const { name } = req.query;
+      const categories = await Category.find();
+      const categoriesWithProducts = [];
 
-      const category = await Category.findById(categoryId);
+      for (let category of categories) {
+        let productsQuery = { categoryId: category._id };
 
-      if (!category) {
-        return res.status(404).json({ message: "Category not found!" });
+        if (req.query.name) {
+          productsQuery.name = { $regex: new RegExp(req.query.name, "i") };
+        }
+
+        const products = await Product.find(productsQuery);
+        categoriesWithProducts.push({
+          category: category,
+          products: products,
+        });
       }
 
-      let productQuery = { categoryId };
-
-      if (name) {
-        productQuery.name = { $regex: name, $options: "i" };
-      }
-
-      const products = await Product.find(productQuery);
-
-      res.status(200).json({ data: { category, products } });
+      res.status(200).json({ data: categoriesWithProducts });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
