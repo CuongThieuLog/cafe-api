@@ -1,4 +1,5 @@
 const Category = require("../models/category.model");
+const Product = require("../models/product.model");
 
 function CategoryController() {
   this.create = async (req, res) => {
@@ -80,6 +81,31 @@ function CategoryController() {
       res
         .status(200)
         .json({ message: "Deleted successfully", data: deletedCategory });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
+  this.getCategoryWithProducts = async (req, res) => {
+    try {
+      const categoryId = req.params.id;
+      const { name } = req.query;
+
+      const category = await Category.findById(categoryId);
+
+      if (!category) {
+        return res.status(404).json({ message: "Category not found!" });
+      }
+
+      let productQuery = { categoryId };
+
+      if (name) {
+        productQuery.name = { $regex: name, $options: "i" };
+      }
+
+      const products = await Product.find(productQuery);
+
+      res.status(200).json({ data: { category, products } });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
